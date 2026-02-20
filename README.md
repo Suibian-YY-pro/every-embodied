@@ -14,7 +14,7 @@
   # Every-Embodied : Zero to Hero in Embodied AI
 
   <p align="center">
-    📌 <a href="https://datawhaler.feishu.cn/wiki/ANwTwcmK1iydqZkBrpRcia3nnlf">组队学习文档 (Team Learning)</a> · ✨ <a href="#learning-map">学习地图 (Learning Map)</a> · 🤖 <a href="#sota">前沿复现 (SOTA)</a>
+    📌 <a href="https://datawhaler.feishu.cn/wiki/ANwTwcmK1iydqZkBrpRcia3nnlf">组队学习文档 (Team Learning Documents)</a> · ✨ <a href="#learning-map">学习地图 (Learning Map)</a> · 🤖 <a href="#sota">前沿复现 (SOTA)</a>
   </p>
 
   <p align="center">
