@@ -133,6 +133,7 @@
     <h3>⭐ 欢迎 <a href="https://github.com/datawhalechina/every-embodied" style="color: #0052cc;">点击此处 Star</a> 共同构建具身智能开源生态 ❤️</h3>
   </div>
   具身智能（Embodied AI）是通往通用人工智能（AGI）的关键钥匙。
+  
   **Every-Embodied 致力于打造一个“基础友好、工程可复现、前沿可拓展”的学习库。**
   我们希望降低门槛：即使你目前只有 Python 基础，也可以从仿真和最小可运行 Demo 出发，逐步完成从“看懂”到“动手复现”的跨越。
 
