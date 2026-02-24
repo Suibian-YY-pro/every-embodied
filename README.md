@@ -243,7 +243,7 @@
   - **OS**: Ubuntu 20.04 / 22.04 (推荐)
   - **Core Libs**:
     - `MuJoCo` (物理引擎)
-    - `Isaac Sim` (Nvidia 仿真平台)
+    - `Isaac Sim` (Nvidia 仿真平台，需要IsaacSim配置时我们会为大家提供预安装的一键启动镜像)
 
   ## 🤝 参与贡献
 
