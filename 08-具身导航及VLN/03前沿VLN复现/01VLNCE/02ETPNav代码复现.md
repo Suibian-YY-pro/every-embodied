@@ -32,9 +32,19 @@ conda create -n vlnce38 python=3.8
 conda activate vlnce38
 
 # 安装 PyTorch (1.9.1+cu111)
+（方式一）
 pip install torch==1.9.1+cu111 torchvision==0.10.1+cu111 \
 -f https://download.pytorch.org/whl/torch_stable.html \
 -i https://mirrors.cloud.tencent.com/pypi/simple
+
+（方式二）
+## 下载torch 1.9.1+cu111（Python3.8/Linux x86_64）
+wget https://mirrors.aliyun.com/pytorch-wheels/cu111/torch-1.9.1%2Bcu111-cp38-cp38-linux_x86_64.whl
+
+## 下载torchvision 0.10.1+cu111（匹配上面的torch版本）
+wget https://mirrors.aliyun.com/pytorch-wheels/cu111/torchvision-0.10.1%2Bcu111-cp38-cp38-linux_x86_64.whl
+
+pip install torch-1.9.1+cu111-cp38-cp38-linux_x86_64.whl torchvision-0.10.1+cu111-cp38-cp38-linux_x86_64.whl
 ```
 
 ### 1.2 安装项目依赖
@@ -48,14 +58,13 @@ python -m pip install -r requirements.txt
 
 ### 1.3 安装 Habitat 仿真器
 
-首先下载无头版本 Habitat-sim v0.1.7 预编译包：[点击下载](https://anaconda.org/aihabitat/habitat-sim/0.1.7/download/linux-64/habitat-sim-0.1.7-py3.8_headless_linux_856d4b08c1a2632626bf0d205bf46471a99502b7.tar.bz2)
-
+(1)下载无头版本 Habitat-sim v0.1.7 预编译包：[点击下载](https://anaconda.org/aihabitat/habitat-sim/0.1.7/download/linux-64/habitat-sim-0.1.7-py3.8_headless_linux_856d4b08c1a2632626bf0d205bf46471a99502b7.tar.bz2)
+(2)下载habitat-lab v0.1.7[点击下载](https://github.com/facebookresearch/habitat-lab/releases/tag/v0.1.7)
 ```bash
 # 安装 habitat-sim
 conda install habitat-sim-0.1.7-py3.8_headless_linux_856d4b08c1a2632626bf0d205bf46471a99502b7.tar.bz2
 
-# 克隆并安装 habitat-lab
-git clone --branch v0.1.7 https://gh-proxy.org/https://github.com/facebookresearch/habitat-lab.git
+# 安装 habitat-lab
 cd habitat-lab-0.1.7
 pip install -e .
 ```
@@ -87,6 +96,7 @@ apt-get install --only-upgrade libstdc++6 -y
 ```
 
 ### 1.5 下载ETPnav-main原始代码
+[离线下载](https://github.com/MarSaKi/ETPNav)
 ```bash
 # 克隆仓库
 git clone https://gh-proxy.org/https://github.com/MarSaKi/ETPNav.git
@@ -145,13 +155,7 @@ git clone https://gh-proxy.org/https://github.com/MarSaKi/ETPNav.git
 
 * **R2R 预训练数据**: [下载链接](https://www.dropbox.com/scl/fo/4iaw2ii2z2iupu0yn4tqh/AP2waOdlwdbJE5sUti2557U/R2R?dl=0&rlkey=88khaszmvhybxleyv0a9bulyn&subfolder_nav_tracking=1) $\rightarrow$ 存至 `pretrain_src/datasets/R2R`
 * **预计算视觉特征**: [下载链接](https://drive.google.com/file/d/1D3Gd9jqRfF-NjlxDAQG_qwxTIakZlrWd/view) $\rightarrow$ 存至 `pretrain_src/datasets/img_features`
-* **LXMERT 预训练权重**:
-
-  ```bash
-  cd pretrain_src
-  mkdir -p datasets/pretrained/LXMERT
-  wget https://nlp.cs.unc.edu/data/model_LXRT.pth -P datasets/pretrained/LXMERT
-  ```
+* **LXMERT 预训练权重**:[下载链接](https://nlp.cs.unc.edu/data/model_LXRT.pth) $\rightarrow$ 存至 `pretrain_src/datasets/pretrained/LXMERT`
 
 ### 3.3 最终预训练权重 (Pretrained Weights)
 
@@ -258,6 +262,10 @@ ETPNav/
    ```bash
    CUDA_VISIBLE_DEVICES=0 bash run_r2r/main.bash train 2333  # training
    ```
+4. **取消TensorFlow警告**（可选）：
+  export TF_ENABLE_ONEDNN_OPTS=0
+  export TF_CPP_MIN_LOG_LEVEL=2
+
 
 ### 4.3 测试与评估 (Eval & Testing)
 
