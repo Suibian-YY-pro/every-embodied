@@ -202,7 +202,7 @@
 
   Mujoco仿真UR机械臂抓取实验：https://www.bilibili.com/video/BV1WhxeznE61/
 
-  春晚武术机器人复刻视频教程：https://www.datawhale.cn/learn/content/258/6228
+  春晚武术机器人复刻视频教程：http://xhslink.com/o/1lB9dX0Vt2t
 
   ACT机械臂抓取水杯算法训练 https://www.bilibili.com/video/BV1YFAbzoECf
     
