@@ -269,6 +269,7 @@
 | 李昀迪          | 第2、8、13章贡献者       | 北京科技大学   | [@muzilyd](https://github.com/muzilyd)                 |
 | 张天一          | 第8章贡献者              | 北京工业大学   | [@GodoneZ](https://github.com/GodoneZ)                 |
 | 陈可为          | 第5、6、7、9、10章贡献者 | 中国科学院大学 | [@Ethan-Chen-plus](https://github.com/Ethan-Chen-plus) |
+| 霍海杰          | 第1章贡献者             | 佛山大学      | [@howe12](https://github.com/howe12) |
 
 
 
