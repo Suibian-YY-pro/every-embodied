@@ -1,6 +1,6 @@
 dataset:
-  repo_id: repo_act_every_embodied
-  root: Datasets/example/top_short_merged
+  repo_id: repo_act_four_types_every_embodied
+  root: Datasets/example/four_types_merged
 
 policy:
   type: act
@@ -26,7 +26,7 @@ policy:
       type: ACTION
       shape: [12]
 
-output_dir: /root/gpufree-data/lehome-outputs/train/act_top_short
+output_dir: /root/gpufree-data/lehome-outputs/train/act_four_types
 batch_size: 64
 steps: 30000
 save_freq: 5000

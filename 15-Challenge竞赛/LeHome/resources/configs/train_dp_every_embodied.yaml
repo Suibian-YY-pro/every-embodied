@@ -1,6 +1,6 @@
 dataset:
   repo_id: repo_dp_every_embodied
-  root: Datasets/example/top_long_merged
+  root: Datasets/example/top_short_merged
 
 policy:
   type: diffusion
@@ -26,8 +26,8 @@ policy:
       type: ACTION
       shape: [12]
 
-output_dir: /root/gpufree-data/lehome-outputs/train/dp_top_long
-batch_size: 8
+output_dir: /root/gpufree-data/lehome-outputs/train/dp_top_short
+batch_size: 48
 steps: 90000
 save_freq: 10000
 log_freq: 100

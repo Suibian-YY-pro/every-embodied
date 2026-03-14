@@ -219,10 +219,7 @@ lerobot-train \
 
 对于初学者，建议第一次不要改命令行，而是先读懂 YAML 里每个字段的作用，再只改一两个参数做实验。
 
-真正运行前，请把 YAML 里的两处内容改成教学任务版本：
-
-- `dataset.root: Datasets/example/top_short_merged`
-- `output_dir: /root/gpufree-data/lehome-outputs/train/act_top_short`
+这份 YAML 已经是 `top_short` 教学版，不需要你再手改。
 
 ## 3.5 教学第二课：在同一个 `top_short` 任务上训练 DP
 
@@ -241,16 +238,13 @@ lerobot-train \
 
 DP 相比 ACT 通常更慢、更吃资源，所以教程配置里把：
 
-- `batch_size` 调小到 `8`
+- `batch_size` 设得比 ACT 小
 - `steps` 拉长到 `90000`
 - `log_freq` 调细到 `100`
 
 这样更符合 Diffusion Policy 的常见训练习惯，也更方便观察收敛过程。
 
-同样，实际开跑前请把 YAML 改成：
-
-- `dataset.root: Datasets/example/top_short_merged`
-- `output_dir: /root/gpufree-data/lehome-outputs/train/dp_top_short`
+这份 YAML 同样已经是 `top_short` 教学版，不需要手改。
 
 ## 3.6 教学评测：评测 `top_short` 的 ACT
 
@@ -389,7 +383,7 @@ python -m scripts.eval \
 
 - `dataset.root`
   - 训练数据目录。
-  - baseline 默认使用 `Datasets/example/top_long_merged`。
+  - 教学第一课默认使用 `Datasets/example/top_short_merged`。
   - 这样设计的原因是官方基线配置本身就是指向 `*_merged`，初学者不需要先理解多数据集合并逻辑，也能直接开练。
 - `policy.type`
   - `act` 或 `diffusion`。
@@ -408,11 +402,11 @@ python -m scripts.eval \
   - 也就是直接预测关节动作。
   - 这种 joint-space control 比 `ee_pose` 更适合作为教学 baseline，因为它少了一层 IK 误差。
 - `output_dir`
-  - 已改到数据盘，例如 `/root/gpufree-data/lehome-outputs/train/act_top_long`。
+  - 已改到数据盘，例如 `/root/gpufree-data/lehome-outputs/train/act_top_short`。
   - 这样做是为了避免把系统盘写满。
 - `batch_size`
   - 和显存直接相关。
-  - ACT 当前建议 `16`，DP 当前建议 `8`。
+  - ACT 教学版当前默认 `64`，DP 教学版当前默认 `48`。
   - 对初学者可以简单理解为：一次喂给模型多少条训练样本。
   - 越大通常训练越快，但显存占用也越高。
 - `steps`
@@ -441,9 +435,9 @@ python -m scripts.eval \
 
 ACT 可以先理解成“基于视觉和状态做动作序列预测”的 transformer 类策略。
 
-在本教程里，我们给 ACT 这样一组较保守的参数：
+在本教程里，我们给 ACT 这样一组更激进、接近 L40 利用上限的参数：
 
-- `batch_size: 16`
+- `batch_size: 64`
 - `steps: 30000`
 - `save_freq: 5000`
 - `log_freq: 200`
@@ -462,7 +456,7 @@ Diffusion Policy 的推理和训练都更重，尤其在多相机输入下更明
 
 教程配置里我们给了：
 
-- `batch_size: 8`
+- `batch_size: 48`
 - `steps: 90000`
 - `save_freq: 10000`
 - `log_freq: 100`
@@ -480,7 +474,7 @@ Diffusion Policy 的推理和训练都更重，尤其在多相机输入下更明
 
 这里给的是经验预估，不是绝对值。
 
-在当前这类 `top_long_merged + state + 3路RGB` 配置下，可以先这样估算：
+在当前这类 `top_short_merged + state + 3路RGB` 配置下，可以先这样估算：
 
 ### ACT
 
@@ -517,7 +511,7 @@ Diffusion Policy 的推理和训练都更重，尤其在多相机输入下更明
 1. 先训练 ACT，不要先上 DP。
 2. 不要先加 depth。
 3. 不要先改成 `ee_pose`。
-4. 先跑通一个类别，比如 `top_long_merged`。
+4. 先跑通一个类别，比如 `top_short_merged`。
 5. 先观察 loss、grad norm、lr 和中间 eval。
 6. 确认 pipeline 稳定以后，再扩大到更多类别。
 
@@ -564,9 +558,9 @@ Diffusion Policy 的推理和训练都更重，尤其在多相机输入下更明
 
 ```bash
 python /root/gpufree-data/every-embodied/15-Challenge竞赛/LeHome/resources/scripts/plot_train_metrics.py \
-  --log_file /root/gpufree-data/lehome-outputs/train/act_top_long/train.log \
-  --out_dir /root/gpufree-data/lehome-outputs/plots/act_top_long \
-  --title "ACT Top-Long Training Metrics"
+  --log_file /root/gpufree-data/lehome-outputs/train/act_top_short/train.log \
+  --out_dir /root/gpufree-data/lehome-outputs/plots/act_top_short \
+  --title "ACT Top-Short Training Metrics"
 ```
 
 当前脚本默认记录这些指标：
@@ -659,6 +653,98 @@ python /root/gpufree-data/every-embodied/15-Challenge竞赛/LeHome/resources/scr
 - 每个 checkpoint 自动 eval
 - 每个类别的 success rate 曲线
 - best checkpoint 自动挑选
+
+## 3.13 已经真实跑过的 smoke 结果
+
+为了避免教程只停留在“命令应该能跑”，这里保留本机已经真实跑过的最小训练证据。
+
+### 3.13.1 ACT 教学版 smoke
+
+- 训练日志：
+  - `/root/gpufree-data/lehome-outputs/train/act_top_short_probe64.log`
+- checkpoint 输出：
+  - `/root/gpufree-data/lehome-outputs/train/act_top_short_probe64/checkpoints/000008/pretrained_model`
+- 曲线图：
+  - `/root/gpufree-data/lehome-outputs/plots/act_top_short_probe64/train_metrics.png`
+- 指标摘要：
+  - `/root/gpufree-data/lehome-outputs/plots/act_top_short_probe64/train_metrics_summary.json`
+
+本次 smoke 的关键信息：
+
+- 数据：`top_short_merged`
+- 有效 batch size：`64`
+- 参数量：约 `52M`
+- 已跑到 step `8`
+- loss 从 `57.147` 降到 `22.134`
+- 平均 `updt_s` 约 `1.77s`
+- 平均 `data_s` 约 `0.60s`
+
+这说明当前教程默认的 ACT 教学配置至少能在本机 L40 上稳定起跑，不需要用户再手工改 YAML 才能启动。
+
+### 3.13.2 DP 教学版 smoke
+
+- 训练日志：
+  - `/root/gpufree-data/lehome-outputs/train/dp_top_short_probe48.log`
+- checkpoint 输出：
+  - `/root/gpufree-data/lehome-outputs/train/dp_top_short_probe48/checkpoints/000008/pretrained_model`
+- 曲线图：
+  - `/root/gpufree-data/lehome-outputs/plots/dp_top_short_probe48/train_metrics.png`
+- 指标摘要：
+  - `/root/gpufree-data/lehome-outputs/plots/dp_top_short_probe48/train_metrics_summary.json`
+
+本次 smoke 的关键信息：
+
+- 数据：`top_short_merged`
+- 有效 batch size：`48`
+- 参数量：约 `271M`
+- 已跑到 step `8`
+- loss 从 `1.119` 降到 `1.097`
+- 平均 `updt_s` 约 `0.94s`
+- 平均 `data_s` 约 `0.79s`
+
+这说明 DP 教学版配置也已经在本机验证过能稳定启动，并且能正常写出 checkpoint 和训练曲线。
+
+### 3.13.3 如何理解这些 smoke 结果
+
+这些结果不是正式比赛成绩，也不是完整收敛实验。它们的作用是：
+
+- 证明命令、配置、输出路径已经打通
+- 证明当前镜像里 `top_short` 教学版配置可以直接启动
+- 证明教程附带的画图脚本可以直接消费真实日志
+
+正式比赛训练时，仍然建议按完整步数继续跑：
+
+- ACT：`30000` steps
+- DP：`90000` steps
+
+如果你想进一步吃满 L40 的 40G 显存，最稳妥的方法不是盲目加步数，而是优先继续试探：
+
+- ACT 再增大 `batch_size`
+- DP 再增大 `batch_size`
+- 或者开启更多周期性的中间 eval
+
+但教学版文档默认保留当前已经验证过的安全起点，这样读者第一次运行更稳。
+
+### 3.13.4 已经导出的 smoke 评测视频
+
+除了训练 smoke 之外，本机还实际把 `top_short` 的首个 smoke 评测 episode 视频导出来了，位置如下：
+
+- ACT:
+  - `/root/gpufree-data/lehome-outputs/eval/act_top_short_smoke/failure/episode0_observation_images_top_rgb.mp4`
+  - `/root/gpufree-data/lehome-outputs/eval/act_top_short_smoke/failure/episode0_observation_images_left_rgb.mp4`
+  - `/root/gpufree-data/lehome-outputs/eval/act_top_short_smoke/failure/episode0_observation_images_right_rgb.mp4`
+- DP:
+  - `/root/gpufree-data/lehome-outputs/eval/dp_top_short_smoke/failure/episode0_observation_images_top_rgb.mp4`
+  - `/root/gpufree-data/lehome-outputs/eval/dp_top_short_smoke/failure/episode0_observation_images_left_rgb.mp4`
+  - `/root/gpufree-data/lehome-outputs/eval/dp_top_short_smoke/failure/episode0_observation_images_right_rgb.mp4`
+
+当前 smoke 评测里，DP 已确认至少完成了首个 episode 并写出日志：
+
+- `Return=102.25`
+- `Length=600`
+- `Success=False`
+
+这里保留的是“教学样例输出”，不是完整比赛统计。因为官方 `category eval` 会继续遍历该类别下的 garment 列表，做教程时通常先保留首个 episode 的真实样例就够用了。
 
 ---
 

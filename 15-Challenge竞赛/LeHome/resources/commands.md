@@ -15,17 +15,21 @@ hf download lehome/dataset_challenge_merged --repo-type dataset --local-dir Data
 ## 训练 ACT
 
 ```bash
+mkdir -p /root/gpufree-data/lehome-outputs/train/act_top_short
+
 lerobot-train \
   --config_path /root/gpufree-data/every-embodied/15-Challenge竞赛/LeHome/resources/configs/train_act_every_embodied.yaml \
-  2>&1 | tee /root/gpufree-data/lehome-outputs/train/act_top_long/train.log
+  2>&1 | tee /root/gpufree-data/lehome-outputs/train/act_top_short/train.log
 ```
 
 ## 训练 DP
 
 ```bash
+mkdir -p /root/gpufree-data/lehome-outputs/train/dp_top_short
+
 lerobot-train \
   --config_path /root/gpufree-data/every-embodied/15-Challenge竞赛/LeHome/resources/configs/train_dp_every_embodied.yaml \
-  2>&1 | tee /root/gpufree-data/lehome-outputs/train/dp_top_long/train.log
+  2>&1 | tee /root/gpufree-data/lehome-outputs/train/dp_top_short/train.log
 ```
 
 ## 评测 ACT
@@ -33,13 +37,13 @@ lerobot-train \
 ```bash
 python -m scripts.eval \
   --policy_type lerobot \
-  --policy_path outputs/train/act/checkpoints/last/pretrained_model \
-  --dataset_root Datasets/example/top_long_merged \
-  --garment_type top_long \
+  --policy_path /root/gpufree-data/lehome-outputs/train/act_top_short/checkpoints/last/pretrained_model \
+  --dataset_root Datasets/example/top_short_merged \
+  --garment_type top_short \
   --num_episodes 2 \
   --enable_cameras \
   --save_video \
-  --video_dir /root/gpufree-data/lehome-outputs/eval/act_top_long \
+  --video_dir /root/gpufree-data/lehome-outputs/eval/act_top_short \
   --device cpu
 ```
 
@@ -48,13 +52,13 @@ python -m scripts.eval \
 ```bash
 python -m scripts.eval \
   --policy_type lerobot \
-  --policy_path /root/gpufree-data/lehome-outputs/train/dp_top_long/checkpoints/last/pretrained_model \
-  --dataset_root Datasets/example/top_long_merged \
-  --garment_type top_long \
+  --policy_path /root/gpufree-data/lehome-outputs/train/dp_top_short/checkpoints/last/pretrained_model \
+  --dataset_root Datasets/example/top_short_merged \
+  --garment_type top_short \
   --num_episodes 2 \
   --enable_cameras \
   --save_video \
-  --video_dir /root/gpufree-data/lehome-outputs/eval/dp_top_long \
+  --video_dir /root/gpufree-data/lehome-outputs/eval/dp_top_short \
   --device cpu \
   --policy_device cpu \
   --policy_num_inference_steps 1
@@ -64,7 +68,7 @@ python -m scripts.eval \
 
 ```bash
 python /root/gpufree-data/every-embodied/15-Challenge竞赛/LeHome/resources/scripts/plot_train_metrics.py \
-  --log_file /root/gpufree-data/lehome-outputs/train/act_top_long/train.log \
-  --out_dir /root/gpufree-data/lehome-outputs/plots/act_top_long \
-  --title "ACT Top-Long Training Metrics"
+  --log_file /root/gpufree-data/lehome-outputs/train/act_top_short/train.log \
+  --out_dir /root/gpufree-data/lehome-outputs/plots/act_top_short \
+  --title "ACT Top-Short Training Metrics"
 ```
