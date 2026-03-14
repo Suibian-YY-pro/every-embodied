@@ -107,6 +107,27 @@ hf download lehome/dataset_challenge_merged --repo-type dataset --local-dir Data
 2. 需要深度实验：在 `merged` 基础上再加 `observation.top_depth`
 3. 需要自己做数据重构：再研究非 `merged` 的 `dataset_challenge`
 
+### 2.6 教学起步该选哪一类任务
+
+如果目的是做教学，而不是一上来就冲完整比赛，我建议优先从：
+
+- `top_short`
+
+开始。
+
+这里要说清楚：这是一个工程上的教学选择，不是因为当前复现包里它已经成功率最高。当前复现包里四类历史统计都是 `0.0%` 成功率，所以不能把“最容易成功”说成已经被现有结果证明。
+
+之所以仍然建议先讲 `top_short`，是因为它更适合教学起步：
+
+- 相比 `top_long`，短袖上衣通常少了长袖带来的远端布料耦合
+- 相比裤子类，短袖上衣的视觉目标更直观，学习者更容易理解“折叠成功”是什么
+- 同样是上衣任务，`top_short` 通常比 `top_long` 更适合作为第一课
+
+因此，本教程采用两层路线：
+
+1. 教学路线：先跑 `top_short`
+2. 比赛路线：再把四类任务全部跑完
+
 ---
 
 ## 3. 最小启动流程
@@ -145,7 +166,38 @@ hf download lehome/dataset_challenge_merged \
   --include 'top_long_merged/**'
 ```
 
-## 3.4 训练 ACT
+如果你准备按本教程完整学习，建议确认四类目录都在：
+
+- `Datasets/example/top_short_merged`
+- `Datasets/example/top_long_merged`
+- `Datasets/example/pant_short_merged`
+- `Datasets/example/pant_long_merged`
+
+这里要明确区分：
+
+- 教学起步：先用 `top_short_merged`
+- 完整比赛：四类都要跑
+
+### 3.3.1 教学流程和比赛流程的区别
+
+教学流程不是为了第一天就把比赛所有任务跑完，而是为了先让学习者掌握：
+
+- 数据目录怎么选
+- 训练怎么起
+- 日志怎么看
+- 模型保存在哪里
+- 评测视频在哪里
+
+所以教学流程先只跑一个类别，推荐 `top_short`。
+
+比赛流程则不同。比赛流程要求你最终覆盖四类任务：
+
+- `top_short`
+- `top_long`
+- `pant_short`
+- `pant_long`
+
+## 3.4 教学第一课：先训练 `top_short` 的 ACT
 
 建议使用教程专用配置，统一把输出保存到数据盘：
 
@@ -153,11 +205,11 @@ hf download lehome/dataset_challenge_merged \
   - `/root/gpufree-data/every-embodied/15-Challenge竞赛/LeHome/resources/configs/train_act_every_embodied.yaml`
 
 ```bash
-mkdir -p /root/gpufree-data/lehome-outputs/train/act_top_long
+mkdir -p /root/gpufree-data/lehome-outputs/train/act_top_short
 
 lerobot-train \
   --config_path /root/gpufree-data/every-embodied/15-Challenge竞赛/LeHome/resources/configs/train_act_every_embodied.yaml \
-  2>&1 | tee /root/gpufree-data/lehome-outputs/train/act_top_long/train.log
+  2>&1 | tee /root/gpufree-data/lehome-outputs/train/act_top_short/train.log
 ```
 
 这条命令做了两件事：
@@ -167,7 +219,12 @@ lerobot-train \
 
 对于初学者，建议第一次不要改命令行，而是先读懂 YAML 里每个字段的作用，再只改一两个参数做实验。
 
-## 3.5 训练 DP
+真正运行前，请把 YAML 里的两处内容改成教学任务版本：
+
+- `dataset.root: Datasets/example/top_short_merged`
+- `output_dir: /root/gpufree-data/lehome-outputs/train/act_top_short`
+
+## 3.5 教学第二课：在同一个 `top_short` 任务上训练 DP
 
 同样建议使用教程专用配置：
 
@@ -175,11 +232,11 @@ lerobot-train \
   - `/root/gpufree-data/every-embodied/15-Challenge竞赛/LeHome/resources/configs/train_dp_every_embodied.yaml`
 
 ```bash
-mkdir -p /root/gpufree-data/lehome-outputs/train/dp_top_long
+mkdir -p /root/gpufree-data/lehome-outputs/train/dp_top_short
 
 lerobot-train \
   --config_path /root/gpufree-data/every-embodied/15-Challenge竞赛/LeHome/resources/configs/train_dp_every_embodied.yaml \
-  2>&1 | tee /root/gpufree-data/lehome-outputs/train/dp_top_long/train.log
+  2>&1 | tee /root/gpufree-data/lehome-outputs/train/dp_top_short/train.log
 ```
 
 DP 相比 ACT 通常更慢、更吃资源，所以教程配置里把：
@@ -190,39 +247,141 @@ DP 相比 ACT 通常更慢、更吃资源，所以教程配置里把：
 
 这样更符合 Diffusion Policy 的常见训练习惯，也更方便观察收敛过程。
 
-## 3.6 评测 ACT
+同样，实际开跑前请把 YAML 改成：
+
+- `dataset.root: Datasets/example/top_short_merged`
+- `output_dir: /root/gpufree-data/lehome-outputs/train/dp_top_short`
+
+## 3.6 教学评测：评测 `top_short` 的 ACT
 
 ```bash
 python -m scripts.eval \
   --policy_type lerobot \
-  --policy_path /root/gpufree-data/lehome-outputs/train/act_top_long/checkpoints/last/pretrained_model \
-  --dataset_root Datasets/example/top_long_merged \
-  --garment_type top_long \
+  --policy_path /root/gpufree-data/lehome-outputs/train/act_top_short/checkpoints/last/pretrained_model \
+  --dataset_root Datasets/example/top_short_merged \
+  --garment_type top_short \
   --num_episodes 2 \
   --enable_cameras \
   --save_video \
-  --video_dir /root/gpufree-data/lehome-outputs/eval/act_top_long \
+  --video_dir /root/gpufree-data/lehome-outputs/eval/act_top_short \
   --device cpu
 ```
 
-## 3.7 评测 DP
+## 3.7 教学评测：评测 `top_short` 的 DP
 
 CPU 评测时建议显式限制 diffusion 推理步数：
 
 ```bash
 python -m scripts.eval \
   --policy_type lerobot \
-  --policy_path /root/gpufree-data/lehome-outputs/train/dp_top_long/checkpoints/last/pretrained_model \
-  --dataset_root Datasets/example/top_long_merged \
-  --garment_type top_long \
+  --policy_path /root/gpufree-data/lehome-outputs/train/dp_top_short/checkpoints/last/pretrained_model \
+  --dataset_root Datasets/example/top_short_merged \
+  --garment_type top_short \
   --num_episodes 2 \
   --enable_cameras \
   --save_video \
-  --video_dir /root/gpufree-data/lehome-outputs/eval/dp_top_long \
+  --video_dir /root/gpufree-data/lehome-outputs/eval/dp_top_short \
   --device cpu \
   --policy_device cpu \
   --policy_num_inference_steps 1
 ```
+
+### 3.7.1 为什么教学不直接从四类一起开始
+
+因为四类一起做，对第一次上手的人来说会同时叠加：
+
+- 四套数据目录
+- 四套模型输出目录
+- 四套评测命令
+- 更长训练时间
+- 更复杂的排障路径
+
+教学最重要的是先把一个完整闭环讲清楚，所以这里先拿 `top_short` 做第一课。
+
+### 3.7.2 完整比赛流程怎么做
+
+完整比赛不等于只跑 `top_short`。完整比赛建议按类别分别完成：
+
+1. `top_short`
+2. `top_long`
+3. `pant_short`
+4. `pant_long`
+
+也就是说，你最终应该把“训练 + 评测 + 结果汇总”这套流程复制到四个类别上。
+
+### 3.7.3 四类任务的完整训练组织方式
+
+最稳妥、最容易教学的方案是：
+
+- 四类分别训练
+- 四类分别评测
+- 最后统一汇总
+
+推荐的目录组织：
+
+```text
+/root/gpufree-data/lehome-outputs/
+├── train/
+│   ├── act_top_short/
+│   ├── act_top_long/
+│   ├── act_pant_short/
+│   ├── act_pant_long/
+│   ├── dp_top_short/
+│   ├── dp_top_long/
+│   ├── dp_pant_short/
+│   └── dp_pant_long/
+├── eval/
+└── plots/
+```
+
+### 3.7.4 四类任务怎么依次跑
+
+你可以把 `top_short` 的流程看作模板，然后把下面三个量替换掉：
+
+- `dataset.root`
+- `output_dir`
+- `garment_type`
+
+例如：
+
+- `top_short`
+  - `dataset.root: Datasets/example/top_short_merged`
+  - `garment_type: top_short`
+- `top_long`
+  - `dataset.root: Datasets/example/top_long_merged`
+  - `garment_type: top_long`
+- `pant_short`
+  - `dataset.root: Datasets/example/pant_short_merged`
+  - `garment_type: pant_short`
+- `pant_long`
+  - `dataset.root: Datasets/example/pant_long_merged`
+  - `garment_type: pant_long`
+
+所以教程里最关键的学习点不是死记一个命令，而是学会：
+
+- 哪三个地方一换，就能迁移到另一类任务
+
+### 3.7.5 比赛提交前要整理什么
+
+当前官方仓库 README 里并没有给出固定的提交通道命令，它写的是：
+
+- 提交说明将在官网提供
+
+所以这里不能伪造一个“官方提交脚本”。但你完全可以把“提交前要准备好的材料”先整理好。
+
+建议至少准备：
+
+- 四类任务各自最终模型
+- 四类任务各自评测日志
+- 四类任务各自 success rate
+- 四类任务各自代表性视频
+- 训练配置 YAML
+- 对应代码 commit
+
+从教程角度，这一步可以理解成：
+
+- 先把你的“比赛实验包”整理完整
+- 等官方提交格式明确后再上传
 
 ## 3.8 训练配置详解
 
